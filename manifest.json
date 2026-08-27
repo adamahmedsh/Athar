@@ -1,11 +1,1 @@
-{
-  "name": "سراج - القرآن الكريم",
-  "short_name": "سراج",
-  "start_url": "/quran-site/",
-  "display": "standalone",
-  "background_color": "#f3f7f5",
-  "theme_color": "#087f5b",
-  "dir": "rtl",
-  "lang": "ar",
-  "description": "سراج - القرآن الكريم والأذكار ومواقيت الصلاة"
-}
+
