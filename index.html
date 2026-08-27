@@ -1,8 +1,3 @@
-قال ChatGPT:
-تمام 👍
-سنبدأ بـ index.html، وبعده style.css ثم app.js.
-
-1. ملف index.html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -19,15 +14,1453 @@
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --bg: #f5f7f3;
+      --surface: #ffffff;
+      --surface-2: #eef3ed;
+      --text: #17231d;
+      --muted: #718078;
+      --primary: #176b4d;
+      --primary-dark: #0e4c37;
+      --primary-light: #dcefe7;
+      --gold: #c79a45;
+      --border: #e3e9e4;
+      --danger: #c94d4d;
+      --shadow: 0 12px 35px rgba(23, 56, 43, .08);
+      --radius: 22px;
+    }
+
+    body.dark {
+      --bg: #0e1713;
+      --surface: #15221c;
+      --surface-2: #1b2b23;
+      --text: #edf5f0;
+      --muted: #9eafa6;
+      --primary: #4db58a;
+      --primary-dark: #328062;
+      --primary-light: #193d30;
+      --gold: #d9b361;
+      --border: #26382f;
+      --shadow: 0 15px 40px rgba(0,0,0,.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Cairo", sans-serif;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(23,107,77,.08), transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(199,154,69,.07), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: .3s;
+    }
+
+    button,
+    input,
+    select {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    .sidebar {
+      width: 265px;
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(18px);
+      border-left: 1px solid var(--border);
+      padding: 25px 18px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: .3s;
+    }
+
+    body.dark .sidebar {
+      background: rgba(21,34,28,.9);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 8px 10px 28px;
+    }
+
+    .brand-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-size: 25px;
+      box-shadow: 0 8px 20px rgba(23,107,77,.25);
+    }
+
+    .brand h2 {
+      font-size: 23px;
+      line-height: 1;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .navigation {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      width: 100%;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 15px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: right;
+      font-size: 14px;
+      transition: .25s;
+    }
+
+    .nav-item:hover {
+      background: var(--surface-2);
+      color: var(--primary);
+      transform: translateX(-3px);
+    }
+
+    .nav-item.active {
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      box-shadow: 0 8px 20px rgba(23,107,77,.2);
+    }
+
+    .nav-item span {
+      flex: 1;
+    }
+
+    .theme-button {
+      margin-top: auto;
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 13px;
+      border-radius: 15px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    /* ================= MAIN ================= */
+
+    .main {
+      width: calc(100% - 265px);
+      margin-right: 265px;
+      padding: 25px 35px 60px;
+    }
+
+    .topbar {
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .mobile-logo {
+      display: none;
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 20px;
+    }
+
+    .top-actions {
+      margin-right: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .top-actions button {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: .2s;
+    }
+
+    .top-actions button:hover {
+      transform: translateY(-2px);
+      color: var(--primary);
+    }
+
+    /* ================= PAGES ================= */
+
+    .page {
+      display: none;
+      animation: pageIn .35s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ================= HERO ================= */
+
+    .hero {
+      min-height: 280px;
+      border-radius: 30px;
+      padding: 35px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background:
+        radial-gradient(circle at 85% 20%, rgba(255,255,255,.16), transparent 25%),
+        linear-gradient(135deg, #176b4d, #0b4834);
+      box-shadow: 0 18px 45px rgba(23,107,77,.2);
+    }
+
+    .hero::after {
+      content: "﷽";
+      position: absolute;
+      left: 30px;
+      bottom: -30px;
+      font-family: "Amiri";
+      font-size: 170px;
+      opacity: .06;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .hero .eyebrow {
+      color: #d8e9df;
+    }
+
+    .hero h1 {
+      font-size: clamp(27px, 4vw, 40px);
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: #d3e4dc;
+      font-size: 14px;
+    }
+
+    .hero-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .hero-info > div {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 12px;
+      backdrop-filter: blur(8px);
+    }
+
+    .daily-progress {
+      position: relative;
+      z-index: 1;
+      width: 145px;
+      height: 145px;
+    }
+
+    .progress-circle {
+      width: 145px;
+      height: 145px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle, #176b4d 58%, transparent 59%),
+        conic-gradient(var(--gold) 0%, rgba(255,255,255,.15) 0%);
+      box-shadow: inset 0 0 0 8px rgba(255,255,255,.04);
+    }
+
+    .progress-circle strong {
+      font-size: 30px;
+    }
+
+    .progress-circle span {
+      font-size: 10px;
+      color: #cde0d7;
+    }
+
+    /* ================= QUICK ================= */
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .quick-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: .25s;
+    }
+
+    .quick-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(23,107,77,.25);
+    }
+
+    .quick-icon {
+      width: 47px;
+      height: 47px;
+      display: grid;
+      place-items: center;
+      background: var(--primary-light);
+      border-radius: 14px;
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+
+    .quick-card h3 {
+      font-size: 15px;
+      margin-bottom: 5px;
+    }
+
+    .quick-card > span,
+    .quick-card > strong {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .quick-card > strong {
+      display: block;
+      color: var(--primary);
+      font-size: 21px;
+      margin: 4px 0;
+    }
+
+    .progress-bar,
+    .big-progress {
+      height: 7px;
+      background: var(--surface-2);
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+
+    .progress-bar i,
+    .big-progress i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), #58b88f);
+      transition: width .4s;
+    }
+
+    .quick-card button,
+    .panel-header button {
+      color: var(--primary);
+      background: transparent;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* ================= PANELS ================= */
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .panel-header h2 {
+      font-size: 16px;
+    }
+
+    .azkar-shortcuts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .azkar-shortcuts button {
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 15px 8px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      transition: .2s;
+    }
+
+    .azkar-shortcuts button:hover {
+      background: var(--primary-light);
+      transform: translateY(-3px);
+    }
+
+    .azkar-shortcuts span {
+      font-size: 23px;
+    }
+
+    .azkar-shortcuts strong {
+      font-size: 11px;
+    }
+
+    .azkar-shortcuts small {
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .mini-player {
+      background: var(--surface-2);
+      border-radius: 18px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .player-cover {
+      width: 53px;
+      height: 53px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-size: 22px;
+    }
+
+    .player-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .player-info strong {
+      font-size: 12px;
+    }
+
+    .player-info span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .mini-player > button {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      color: white;
+      background: var(--primary);
+    }
+
+    /* ================= SECTION HEADER ================= */
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 25px;
+    }
+
+    .section-header h1 {
+      font-size: 32px;
+      margin-bottom: 5px;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .search {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      overflow: hidden;
+      min-width: 280px;
+    }
+
+    .search input {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      padding: 12px;
+      flex: 1;
+    }
+
+    .search button {
+      width: 45px;
+      background: var(--primary);
+      color: white;
+    }
+
+    /* ================= QURAN ================= */
+
+    .quran-container {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 18px;
+    }
+
+    .surah-sidebar,
+    .quran-reader {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .surah-sidebar {
+      padding: 15px;
+      height: 680px;
+      overflow: hidden;
+    }
+
+    .surah-title {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    .surah-title h3 {
+      font-size: 15px;
+    }
+
+    .surah-title span {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+    }
+
+    .surah-search,
+    .reciter-toolbar input,
+    .reciter-toolbar select,
+    .tasbeeh-box select,
+    .prayer-settings select {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      outline: none;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 11px;
+      margin-bottom: 10px;
+    }
+
+    .surah-list {
+      height: calc(100% - 90px);
+      overflow-y: auto;
+    }
+
+    .surah-list > * {
+      padding: 11px;
+      border-radius: 11px;
+      margin-bottom: 3px;
+      cursor: pointer;
+    }
+
+    .surah-list > *:hover {
+      background: var(--surface-2);
+    }
+
+    .quran-reader {
+      padding: 25px;
+      min-height: 680px;
+    }
+
+    .reader-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .surah-heading {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .surah-heading > span {
+      font-family: "Amiri";
+      font-size: 31px;
+      color: var(--gold);
+    }
+
+    .surah-heading h2 {
+      font-size: 21px;
+    }
+
+    .surah-heading small {
+      color: var(--muted);
+    }
+
+    .reader-controls {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .reader-controls select,
+    .reader-controls button {
+      height: 38px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 0 9px;
+    }
+
+    .basmala {
+      text-align: center;
+      font-family: "Amiri";
+      color: var(--gold);
+      font-size: 24px;
+      margin: 25px 0;
+    }
+
+    .quran-text {
+      font-family: "Amiri", serif;
+      font-size: 27px;
+      line-height: 2.2;
+      text-align: center;
+      min-height: 330px;
+    }
+
+    .reader-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .reader-buttons button,
+    .primary {
+      padding: 11px 18px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .reader-buttons .primary,
+    .primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    #quranAudio {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    /* ================= RECITERS ================= */
+
+    .reciter-toolbar {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 180px;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .reciter-toolbar input,
+    .reciter-toolbar select {
+      margin: 0;
+    }
+
+    .reciters-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .reciter-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    /* ================= AZKAR ================= */
+
+    .azkar-total {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 10px 18px;
+      border-radius: 14px;
+      text-align: center;
+    }
+
+    .azkar-total strong {
+      display: block;
+      font-size: 22px;
+    }
+
+    .azkar-total span {
+      font-size: 11px;
+    }
+
+    .azkar-categories {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .azkar-category {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: .25s;
+    }
+
+    .azkar-category:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+    }
+
+    .azkar-category .icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .azkar-category h3 {
+      font-size: 14px;
+    }
+
+    .azkar-category p {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 4px;
+    }
+
+    .azkar-reader {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .azkar-reader.active {
+      display: block;
+    }
+
+    .azkar-reader-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+
+    .azkar-reader-top button {
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 9px 14px;
+      border-radius: 11px;
+    }
+
+    .azkar-reader-top .danger {
+      color: var(--danger);
+    }
+
+    .azkar-heading {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .azkar-heading > span {
+      font-size: 38px;
+    }
+
+    .azkar-heading h2 {
+      font-size: 21px;
+    }
+
+    .azkar-heading p {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .section-progress {
+      margin: 25px 0;
+    }
+
+    .section-progress > div:first-child {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .dhikr-card {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(23,107,77,.08), transparent 45%),
+        var(--surface-2);
+      border-radius: 25px;
+      padding: 35px;
+      text-align: center;
+    }
+
+    .dhikr-card > small {
+      color: var(--muted);
+    }
+
+    .dhikr-text {
+      font-family: "Amiri";
+      font-size: 30px;
+      line-height: 2;
+      margin: 25px auto;
+      max-width: 800px;
+    }
+
+    .dhikr-counter strong {
+      font-size: 27px;
+      color: var(--primary);
+    }
+
+    .dhikr-counter span {
+      color: var(--muted);
+      margin: 0 5px;
+    }
+
+    #dhikrRemaining {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 5px;
+    }
+
+    .dhikr-button,
+    .tasbeeh-button {
+      margin: 20px auto;
+      width: 170px;
+      height: 70px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      font-size: 17px;
+      box-shadow: 0 12px 25px rgba(23,107,77,.25);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      transition: .15s;
+    }
+
+    .dhikr-button:active,
+    .tasbeeh-button:active {
+      transform: scale(.94);
+    }
+
+    .secondary {
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .vibration {
+      display: flex;
+      gap: 7px;
+      justify-content: center;
+      margin-top: 15px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* ================= TASBEEH ================= */
+
+    .tasbeeh-layout {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 20px;
+    }
+
+    .tasbeeh-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .tasbeeh-box select {
+      max-width: 350px;
+    }
+
+    .targets {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      margin: 10px 0 25px;
+    }
+
+    .targets button {
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 9px 15px;
+      border-radius: 10px;
+    }
+
+    .targets button.selected {
+      background: var(--primary);
+      color: white;
+    }
+
+    .tasbeeh-circle {
+      width: 230px;
+      height: 230px;
+      margin: auto;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle, var(--surface) 61%, transparent 62%),
+        conic-gradient(var(--primary) 0%, var(--surface-2) 0%);
+      border: 10px solid var(--surface-2);
+      box-shadow: 0 15px 40px rgba(23,107,77,.12);
+    }
+
+    .tasbeeh-circle strong {
+      font-size: 55px;
+      color: var(--primary);
+    }
+
+    .tasbeeh-circle span {
+      color: var(--muted);
+    }
+
+    .counter-actions {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .counter-actions button {
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 9px 17px;
+      border-radius: 11px;
+    }
+
+    /* ================= PRAYER ================= */
+
+    .prayer-settings {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .prayer-settings label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .prayer-settings select {
+      width: 200px;
+      margin: 0;
+    }
+
+    .prayer-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+
+    .prayer-card-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 25px 15px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .prayer-card-item.active {
+      background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+      color: white;
+      transform: translateY(-5px);
+    }
+
+    .prayer-card-item .icon {
+      font-size: 25px;
+    }
+
+    .prayer-card-item h3 {
+      margin: 7px 0;
+      font-size: 14px;
+    }
+
+    .prayer-card-item strong {
+      font-size: 23px;
+    }
+
+    /* ================= QIBLA ================= */
+
+    .qibla-box {
+      max-width: 650px;
+      margin: auto;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    .compass {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      margin: 0 auto 25px;
+      position: relative;
+      border: 12px solid var(--surface-2);
+      background:
+        radial-gradient(circle, var(--surface) 65%, var(--surface-2) 66%);
+      box-shadow: 0 15px 45px rgba(0,0,0,.08);
+    }
+
+    .compass span {
+      position: absolute;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .north {
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .east {
+      right: 15px;
+      top: 50%;
+    }
+
+    .south {
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .west {
+      left: 15px;
+      top: 50%;
+    }
+
+    .needle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(118deg);
+      color: var(--primary);
+      font-size: 70px;
+    }
+
+    .qibla-box > h2 {
+      font-size: 22px;
+    }
+
+    .qibla-box > strong {
+      display: block;
+      color: var(--primary);
+      font-size: 25px;
+      margin: 5px;
+    }
+
+    .qibla-box > p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 18px;
+    }
+
+    /* ================= STATS ================= */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stat-card strong {
+      display: block;
+      color: var(--primary);
+      font-size: 28px;
+      margin: 5px 0;
+    }
+
+    .stat-card small {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    /* ================= ACHIEVEMENTS ================= */
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .achievement-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 25px;
+      box-shadow: var(--shadow);
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .achievement-card .icon {
+      width: 60px;
+      height: 60px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: var(--primary-light);
+      font-size: 28px;
+    }
+
+    .achievement-card h3 {
+      font-size: 14px;
+    }
+
+    .achievement-card p {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    /* ================= TOAST ================= */
+
+    .toast {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      background: var(--text);
+      color: var(--surface);
+      padding: 12px 18px;
+      border-radius: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px);
+      transition: .3s;
+      z-index: 999;
+      font-size: 12px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 1100px) {
+      .quick-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dashboard,
+      .tasbeeh-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .prayer-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 800px) {
+      .sidebar {
+        width: 75px;
+        padding: 15px 9px;
+      }
+
+      .brand {
+        justify-content: center;
+        padding: 5px 0 20px;
+      }
+
+      .brand > div:last-child,
+      .nav-item span,
+      .theme-button span {
+        display: none;
+      }
+
+      .nav-item {
+        justify-content: center;
+        padding: 13px;
+        font-size: 18px;
+      }
+
+      .theme-button {
+        font-size: 18px;
+      }
+
+      .main {
+        width: calc(100% - 75px);
+        margin-right: 75px;
+        padding: 18px;
+      }
+
+      .mobile-logo {
+        display: block;
+      }
+
+      .hero {
+        padding: 25px;
+      }
+
+      .daily-progress {
+        width: 110px;
+        height: 110px;
+      }
+
+      .progress-circle {
+        width: 110px;
+        height: 110px;
+      }
+
+      .progress-circle strong {
+        font-size: 23px;
+      }
+
+      .quran-container {
+        grid-template-columns: 1fr;
+      }
+
+      .surah-sidebar {
+        height: 250px;
+      }
+
+      .reciters-grid,
+      .achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .azkar-categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .reader-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .main {
+        padding: 12px;
+      }
+
+      .hero {
+        min-height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+      }
+
+      .daily-progress {
+        align-self: center;
+      }
+
+      .quick-grid,
+      .stats-grid,
+      .reciters-grid,
+      .achievements-grid,
+      .azkar-categories,
+      .prayer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .reciter-toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .azkar-shortcuts {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .prayer-settings {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .prayer-settings select {
+        width: 100%;
+      }
+
+      .quran-reader {
+        padding: 17px;
+      }
+
+      .quran-text {
+        font-size: 23px;
+      }
+
+      .reader-buttons {
+        flex-direction: column;
+      }
+
+      .tasbeeh-box {
+        padding: 20px 10px;
+      }
+
+      .tasbeeh-circle {
+        width: 205px;
+        height: 205px;
+      }
+
+      .compass {
+        width: 230px;
+        height: 230px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <!-- ================= SIDEBAR ================= -->
-
+  <!-- SIDEBAR -->
   <aside class="sidebar">
 
     <div class="brand">
@@ -96,11 +1529,8 @@
   </aside>
 
 
-  <!-- ================= MAIN ================= -->
-
+  <!-- MAIN -->
   <main class="main">
-
-    <!-- TOP BAR -->
 
     <header class="topbar">
 
@@ -123,10 +1553,7 @@
     </header>
 
 
-    <!-- ================================================= -->
     <!-- HOME -->
-    <!-- ================================================= -->
-
     <section id="home" class="page active">
 
       <div class="hero">
@@ -137,9 +1564,7 @@
             🌿 وردك اليومي
           </span>
 
-          <h1>
-            السلام عليكم 👋
-          </h1>
+          <h1>السلام عليكم 👋</h1>
 
           <p>
             اجعل لك وردًا كل يوم، ولو كان قليلًا.
@@ -167,18 +1592,13 @@
 
         </div>
 
-
         <div class="daily-progress">
 
           <div class="progress-circle">
 
-            <strong id="dailyPercent">
-              0%
-            </strong>
+            <strong id="dailyPercent">0%</strong>
 
-            <span>
-              إنجاز اليوم
-            </span>
+            <span>إنجاز اليوم</span>
 
           </div>
 
@@ -187,19 +1607,13 @@
       </div>
 
 
-      <!-- QUICK CARDS -->
-
       <div class="quick-grid">
 
         <article class="quick-card" data-open="quran">
 
-          <div class="quick-icon">
-            📖
-          </div>
+          <div class="quick-icon">📖</div>
 
-          <h3>
-            القرآن الكريم
-          </h3>
+          <h3>القرآن الكريم</h3>
 
           <span id="quranProgressText">
             ابدأ وردك
@@ -209,47 +1623,33 @@
             <i id="quranProgress"></i>
           </div>
 
-          <button>
-            متابعة القراءة
-          </button>
+          <button>متابعة القراءة</button>
 
         </article>
 
 
         <article class="quick-card" data-open="azkar">
 
-          <div class="quick-icon">
-            🤲
-          </div>
+          <div class="quick-icon">🤲</div>
 
-          <h3>
-            الأذكار
-          </h3>
+          <h3>الأذكار</h3>
 
-          <span id="azkarProgressText">
-            0%
-          </span>
+          <span id="azkarProgressText">0%</span>
 
           <div class="progress-bar">
             <i id="azkarProgress"></i>
           </div>
 
-          <button>
-            متابعة الأذكار
-          </button>
+          <button>متابعة الأذكار</button>
 
         </article>
 
 
         <article class="quick-card" data-open="tasbeeh">
 
-          <div class="quick-icon">
-            📿
-          </div>
+          <div class="quick-icon">📿</div>
 
-          <h3>
-            السبحة
-          </h3>
+          <h3>السبحة</h3>
 
           <span id="tasbeehProgressText">
             0 / 100
@@ -259,30 +1659,20 @@
             <i id="tasbeehProgress"></i>
           </div>
 
-          <button>
-            متابعة التسبيح
-          </button>
+          <button>متابعة التسبيح</button>
 
         </article>
 
 
         <article class="quick-card prayer-card">
 
-          <div class="quick-icon">
-            🕌
-          </div>
+          <div class="quick-icon">🕌</div>
 
-          <h3>
-            الصلاة القادمة
-          </h3>
+          <h3>الصلاة القادمة</h3>
 
-          <strong id="nextPrayer">
-            العشاء
-          </strong>
+          <strong id="nextPrayer">العشاء</strong>
 
-          <span id="nextPrayerTime">
-            19:48
-          </span>
+          <span id="nextPrayerTime">19:48</span>
 
           <button data-open="prayer">
             عرض المواقيت
@@ -293,24 +1683,19 @@
       </div>
 
 
-      <!-- DASHBOARD -->
-
       <div class="dashboard">
 
         <div class="panel">
 
           <div class="panel-header">
 
-            <h2>
-              🤲 الأذكار
-            </h2>
+            <h2>🤲 الأذكار</h2>
 
             <button data-open="azkar">
               عرض الكل ←
             </button>
 
           </div>
-
 
           <div class="azkar-shortcuts">
 
@@ -347,16 +1732,13 @@
 
           <div class="panel-header">
 
-            <h2>
-              🎙️ استمع للقرآن
-            </h2>
+            <h2>🎙️ استمع للقرآن</h2>
 
             <button data-open="reciters">
               القرّاء ←
             </button>
 
           </div>
-
 
           <div class="mini-player">
 
@@ -389,10 +1771,7 @@
     </section>
 
 
-    <!-- ================================================= -->
     <!-- QURAN -->
-    <!-- ================================================= -->
-
     <section id="quran" class="page">
 
       <div class="section-header">
@@ -403,16 +1782,13 @@
             📖 المصحف الشريف
           </span>
 
-          <h1>
-            القرآن الكريم
-          </h1>
+          <h1>القرآن الكريم</h1>
 
           <p>
             القرآن كاملًا مع التلاوة والبحث والعلامات المرجعية.
           </p>
 
         </div>
-
 
         <div class="search">
 
@@ -433,30 +1809,21 @@
 
       <div class="quran-container">
 
-
-        <!-- SURAHS -->
-
         <aside class="surah-sidebar">
 
           <div class="surah-title">
 
-            <h3>
-              سور القرآن
-            </h3>
+            <h3>سور القرآن</h3>
 
-            <span>
-              114
-            </span>
+            <span>114</span>
 
           </div>
-
 
           <input
             id="surahSearch"
             class="surah-search"
             placeholder="ابحث عن سورة..."
           >
-
 
           <div
             id="surahList"
@@ -466,17 +1833,13 @@
         </aside>
 
 
-        <!-- READER -->
-
         <div class="quran-reader">
 
           <div class="reader-header">
 
             <div class="surah-heading">
 
-              <span>
-                ﷽
-              </span>
+              <span>﷽</span>
 
               <div>
 
@@ -492,11 +1855,9 @@
 
             </div>
 
-
             <div class="reader-controls">
 
-              <select id="reciterSelect">
-              </select>
+              <select id="reciterSelect"></select>
 
               <button id="fontDown">
                 A−
@@ -533,10 +1894,7 @@
               → السابقة
             </button>
 
-            <button
-              id="playSurah"
-              class="primary"
-            >
+            <button id="playSurah" class="primary">
               ▶ تشغيل السورة
             </button>
 
@@ -566,10 +1924,7 @@
     </section>
 
 
-    <!-- ================================================= -->
     <!-- RECITERS -->
-    <!-- ================================================= -->
-
     <section id="reciters" class="page">
 
       <div class="section-header">
@@ -580,9 +1935,7 @@
             🎙️ أصوات القرآن
           </span>
 
-          <h1>
-            القرّاء والمشايخ
-          </h1>
+          <h1>القرّاء والمشايخ</h1>
 
           <p>
             اختر القارئ والسورة واستمع إلى القرآن كاملًا.
@@ -600,8 +1953,7 @@
           placeholder="🔎 ابحث عن قارئ..."
         >
 
-        <select id="reciterSurah">
-        </select>
+        <select id="reciterSurah"></select>
 
         <select id="audioSpeed">
 
@@ -634,10 +1986,7 @@
     </section>
 
 
-    <!-- ================================================= -->
     <!-- AZKAR -->
-    <!-- ================================================= -->
-
     <section id="azkar" class="page">
 
       <div class="section-header">
@@ -648,16 +1997,13 @@
             🤲 وردك اليومي
           </span>
 
-          <h1>
-            الأذكار
-          </h1>
+          <h1>الأذكار</h1>
 
           <p>
             اختر القسم وأكمل كل ذكر بعداده الخاص.
           </p>
 
         </div>
-
 
         <div class="azkar-total">
 
@@ -691,10 +2037,7 @@
             ← الأقسام
           </button>
 
-          <button
-            id="resetAzkar"
-            class="danger"
-          >
+          <button id="resetAzkar" class="danger">
             إعادة القسم
           </button>
 
@@ -722,9 +2065,7 @@
 
           <div>
 
-            <span>
-              إنجاز القسم
-            </span>
+            <span>إنجاز القسم</span>
 
             <strong id="sectionProgress">
               0 / 0
@@ -761,9 +2102,7 @@
               0
             </strong>
 
-            <span>
-              /
-            </span>
+            <span>/</span>
 
             <strong id="dhikrTarget">
               1
@@ -818,10 +2157,7 @@
     </section>
 
 
-    <!-- ================================================= -->
     <!-- TASBEEH -->
-    <!-- ================================================= -->
-
     <section id="tasbeeh" class="page">
 
       <div class="section-header">
@@ -832,9 +2168,7 @@
             📿 السبحة الإلكترونية
           </span>
 
-          <h1>
-            السبحة
-          </h1>
+          <h1>السبحة</h1>
 
           <p>
             اختر الذكر والعدد وابدأ التسبيح.
@@ -851,25 +2185,15 @@
 
           <select id="tasbeehType">
 
-            <option>
-              سبحان الله
-            </option>
+            <option>سبحان الله</option>
 
-            <option>
-              الحمد لله
-            </option>
+            <option>الحمد لله</option>
 
-            <option>
-              الله أكبر
-            </option>
+            <option>الله أكبر</option>
 
-            <option>
-              أستغفر الله
-            </option>
+            <option>أستغفر الله</option>
 
-            <option>
-              لا إله إلا الله
-            </option>
+            <option>لا إله إلا الله</option>
 
           </select>
 
@@ -978,10 +2302,7 @@
     </section>
 
 
-    <!-- ================================================= -->
     <!-- PRAYER -->
-    <!-- ================================================= -->
-
     <section id="prayer" class="page">
 
       <div class="section-header">
@@ -992,9 +2313,7 @@
             🕌 مواقيت الصلاة
           </span>
 
-          <h1>
-            مواقيت الصلاة
-          </h1>
+          <h1>مواقيت الصلاة</h1>
 
           <p>
             اختر مدينتك.
@@ -1047,10 +2366,7 @@
     </section>
 
 
-    <!-- ================================================= -->
     <!-- QIBLA -->
-    <!-- ================================================= -->
-
     <section id="qibla" class="page">
 
       <div class="section-header">
@@ -1061,9 +2377,7 @@
             🧭 اتجاه القبلة
           </span>
 
-          <h1>
-            القبلة
-          </h1>
+          <h1>القبلة</h1>
 
           <p>
             اتجاه القبلة من القاهرة.
@@ -1078,21 +2392,13 @@
 
         <div class="compass">
 
-          <span class="north">
-            N
-          </span>
+          <span class="north">N</span>
 
-          <span class="east">
-            E
-          </span>
+          <span class="east">E</span>
 
-          <span class="south">
-            S
-          </span>
+          <span class="south">S</span>
 
-          <span class="west">
-            W
-          </span>
+          <span class="west">W</span>
 
           <div class="needle">
             ▲
@@ -1125,10 +2431,7 @@
     </section>
 
 
-    <!-- ================================================= -->
     <!-- STATS -->
-    <!-- ================================================= -->
-
     <section id="stats" class="page">
 
       <div class="section-header">
@@ -1139,9 +2442,7 @@
             📊 متابعة التقدم
           </span>
 
-          <h1>
-            إحصائياتك
-          </h1>
+          <h1>إحصائياتك</h1>
 
           <p>
             تابع وردك اليومي.
@@ -1156,9 +2457,7 @@
 
         <div class="stat-card">
 
-          <span>
-            📖 القرآن
-          </span>
+          <span>📖 القرآن</span>
 
           <strong id="statQuran">
             0%
@@ -1173,9 +2472,7 @@
 
         <div class="stat-card">
 
-          <span>
-            🤲 الأذكار
-          </span>
+          <span>🤲 الأذكار</span>
 
           <strong id="statAzkar">
             0%
@@ -1190,9 +2487,7 @@
 
         <div class="stat-card">
 
-          <span>
-            📿 التسبيح
-          </span>
+          <span>📿 التسبيح</span>
 
           <strong id="statTasbeeh">
             0%
@@ -1207,9 +2502,7 @@
 
         <div class="stat-card">
 
-          <span>
-            🔥 السلسلة
-          </span>
+          <span>🔥 السلسلة</span>
 
           <strong id="statStreak">
             0 يوم
@@ -1226,10 +2519,7 @@
     </section>
 
 
-    <!-- ================================================= -->
     <!-- ACHIEVEMENTS -->
-    <!-- ================================================= -->
-
     <section id="achievements" class="page">
 
       <div class="section-header">
@@ -1240,9 +2530,7 @@
             🏆 إنجازاتك
           </span>
 
-          <h1>
-            الإنجازات
-          </h1>
+          <h1>الإنجازات</h1>
 
           <p>
             استمر في وردك واجمع الإنجازات.
@@ -1264,8 +2552,6 @@
 
 </div>
 
-
-<!-- TOAST -->
 
 <div
   id="toast"
